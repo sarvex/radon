@@ -19,9 +19,9 @@ if os.path.exists("/config.json"):
 
         if config["config"].get("python_version"):
             version = config["config"].get("python_version")
-            if version == "2" or version == 2:
+            if version in ["2", 2]:
                 binstub = "radon2"
-            elif version != "3" and version != 3:
+            elif version not in ["3", 3]:
                 sys.exit("Invalid python_version; must be either 2 or 3")
         if config["config"].get("encoding"):
             encoding = config["config"].get("encoding")
@@ -40,7 +40,7 @@ if os.path.exists("/config.json"):
     include_paths = [shlex.quote(path) for path in include_paths
                      if os.path.isdir(path) or path.endswith(".py")]
 
-if len(include_paths) > 0:
+if include_paths:
     paths = " ".join(include_paths)
 
     print("Running {0}...".format(binstub), file = sys.stderr)

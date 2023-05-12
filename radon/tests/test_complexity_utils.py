@@ -16,20 +16,19 @@ def _compute_cc_rank(score):
     # This is really ugly
     # Luckily the rank function in radon.complexity is not like this!
     if score < 0:
-        rank = ValueError
+        return ValueError
     elif 0 <= score <= 5:
-        rank = 'A'
+        return 'A'
     elif 6 <= score <= 10:
-        rank = 'B'
+        return 'B'
     elif 11 <= score <= 20:
-        rank = 'C'
+        return 'C'
     elif 21 <= score <= 30:
-        rank = 'D'
+        return 'D'
     elif 31 <= score <= 40:
-        rank = 'E'
+        return 'E'
     else:
-        rank = 'F'
-    return rank
+        return 'F'
 
 
 RANK_CASES = [(score, _compute_cc_rank(score)) for score in range(-1, 100)]
@@ -113,6 +112,6 @@ def test_flake8_checker():
     c = Flake8Checker(ast.parse(dedent(GENERAL_CASES[0][0])), 'test case')
     assert c.max_cc == -1
     assert c.no_assert is False
-    assert list(c.run()) == []
+    assert not list(c.run())
     c.max_cc = 3
     assert list(c.run()) == [(7, 0, 'R701 \'f\' is too complex (4)', type(c))]

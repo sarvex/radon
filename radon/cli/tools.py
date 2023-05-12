@@ -141,7 +141,7 @@ else:
                 except LookupError:
                     # This behaviour mimics the Python interpreter
                     if filename is None:
-                        msg = 'unknown encoding: ' + encoding
+                        msg = f'unknown encoding: {encoding}'
                     else:
                         msg = 'unknown encoding for {!r}: ' '{}'.format(
                             filename, encoding
@@ -249,7 +249,7 @@ def iter_filenames(paths, exclude=None, ignore=None):
     patterns. If paths contains only a single hyphen, stdin is implied,
     returned as is.
     '''
-    if set(paths) == set(('-',)):
+    if set(paths) == {'-'}:
         yield '-'
         return
     exclude = exclude.split(',') if exclude else []
@@ -265,8 +265,7 @@ def iter_filenames(paths, exclude=None, ignore=None):
         ):
             yield path
             continue
-        for filename in explore_directories(path, exclude, ignore):
-            yield filename
+        yield from explore_directories(path, exclude, ignore)
 
 
 def explore_directories(start, exclude, ignore):
@@ -304,7 +303,7 @@ def cc_to_dict(obj):
         'type': get_type(obj),
         'rank': cc_rank(obj.complexity),
     }
-    attrs = set(Function._fields) - set(('is_method', 'closures'))
+    attrs = set(Function._fields) - {'is_method', 'closures'}
     for a in attrs:
         v = getattr(obj, a, None)
         if v is not None:
@@ -362,18 +361,9 @@ def dict_to_md(results):
         for block in blocks:
             raw_classname = block.get("classname")
             raw_name = block.get("name")
-            name = "{}.{}".format(
-                raw_classname,
-                raw_name) if raw_classname else block["name"]
+            name = f"{raw_classname}.{raw_name}" if raw_classname else block["name"]
             type = type_letter_map[block["type"]]
-            md_string += "| {} | {} | {} | {}:{} | {} | {} |\n".format(
-                filename,
-                name,
-                type,
-                block["lineno"],
-                block["endline"],
-                block["complexity"],
-                block["rank"])
+            md_string += f'| {filename} | {name} | {type} | {block["lineno"]}:{block["endline"]} | {block["complexity"]} | {block["rank"]} |\n'
     return md_string
 
 
@@ -391,11 +381,7 @@ def dict_to_codeclimate_issues(results, threshold='B'):
             beginline = re.search(r'\d+', description)
             error_category = 'Bug Risk'
 
-            if beginline:
-                beginline = int(beginline.group())
-            else:
-                beginline = 1
-
+            beginline = int(beginline.group()) if beginline else 1
             endline = beginline
             remediation_points = 1000000
             fingerprint = get_fingerprint(path, ['error'])
@@ -412,11 +398,11 @@ def dict_to_codeclimate_issues(results, threshold='B'):
                 )
             )
         else:
+            category = 'Complexity'
             for offender in info:
                 beginline = offender['lineno']
                 endline = offender['endline']
                 complexity = offender['complexity']
-                category = 'Complexity'
                 description = (
                     'Cyclomatic complexity is too high in {0} {1}. '
                     '({2})'.format(

@@ -39,9 +39,7 @@ def cc_rank(cc):
     '''
     if cc < 0:
         raise ValueError('Complexity must be a non-negative value')
-    return chr(
-        min(int(math.ceil(cc / 10.0) or 1) - (1, 0)[5 - cc < 0], 5) + 65
-    )
+    return chr(min(int(math.ceil(cc / 10.0) or 1) - (1, 0)[cc > 5], 5) + 65)
 
 
 def average_complexity(blocks):
@@ -86,7 +84,7 @@ def add_inner_blocks(blocks):
         new_blocks.append(block)
         for inner_block in ('closures', 'inner_classes'):
             for i_block in getattr(block, inner_block, ()):
-                named = i_block._replace(name=block.name + '.' + i_block.name)
+                named = i_block._replace(name=f'{block.name}.{i_block.name}')
                 all_blocks.append(named)
                 for meth in getattr(named, 'methods', ()):
                     m_named = meth._replace(classname=named.name)

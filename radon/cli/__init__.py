@@ -355,7 +355,7 @@ class Config(object):
             argspec = inspect.getargspec(func)
         args, _, _, defaults = argspec[:4]
         values = dict(zip(reversed(args), reversed(defaults or [])))
-        values.update(kwonlydefaults)
+        values |= kwonlydefaults
         return cls(**values)
 
 
@@ -385,7 +385,7 @@ def log_result(harvester, **kwargs):
     else:
         for msg, h_args, h_kwargs in harvester.to_terminal():
             kw = kwargs.copy()
-            kw.update(h_kwargs)
+            kw |= h_kwargs
             if h_kwargs.get('error', False):
                 log(msg, **kw)
                 log_error(h_args[0], indent=1)

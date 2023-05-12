@@ -110,7 +110,7 @@ def _get_all_tokens(line, lines):
             # start adding lines and stop when tokenize stops complaining
             pass
         else:
-            if not any(t[0] == tokenize.ERRORTOKEN for t in tokens):
+            if all(t[0] != tokenize.ERRORTOKEN for t in tokens):
                 return tokens, used_lines
 
         # Add another line
@@ -166,9 +166,7 @@ def _logical(tokens):
             # If the line is only composed by comments, newlines and endmarker
             # then it does not count as a logical line.
             # Otherwise it count as 1.
-            if not list(_fewer_tokens(processed, [NL, NEWLINE, EM])):
-                return 0
-            return 1
+            return 0 if not list(_fewer_tokens(processed, [NL, NEWLINE, EM])) else 1
 
     return sum(aux(sub) for sub in _split_tokens(tokens, OP, ';'))
 

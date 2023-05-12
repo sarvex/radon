@@ -129,7 +129,7 @@ def test_raw_ipynb_cells(log_mock):
     target = os.path.join(DIRNAME, 'data/example.ipynb')
     harvester = RawHarvester([DIRNAME], raw_cfg)
     out = json.loads(harvester.as_json())
-    cell_target = target + ":[3]"
+    cell_target = f"{target}:[3]"
     assert target in out
     assert cell_target in out
     assert out[cell_target]['loc'] == 52

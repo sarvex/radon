@@ -72,10 +72,7 @@ def halstead_visitor_report(visitor):
     N1, N2 = visitor.operators, visitor.operands
     h = h1 + h2
     N = N1 + N2
-    if h1 and h2:
-        length = h1 * math.log(h1, 2) + h2 * math.log(h2, 2)
-    else:
-        length = 0
+    length = h1 * math.log(h1, 2) + h2 * math.log(h2, 2) if h1 and h2 else 0
     volume = N * math.log(h, 2) if h != 0 else 0
     difficulty = (h1 * N2) / float(2 * h2) if h2 != 0 else 0
     effort = difficulty * volume
@@ -154,4 +151,4 @@ def mi_rank(score):
         * B if :math:`9 < \text{score} \le 19`;
         * C if :math:`\text{score} \le 9`.
     '''
-    return chr(65 + (9 - score >= 0) + (19 - score >= 0))
+    return chr(65 + (score <= 9) + (score <= 19))

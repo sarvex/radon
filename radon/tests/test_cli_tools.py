@@ -12,9 +12,7 @@ from radon.visitors import Class, Function
 
 
 def fake_isfile(filename):
-    if filename == 'file.py':
-        return True
-    return False
+    return filename == 'file.py'
 
 
 def fake_walk(start):
@@ -43,7 +41,7 @@ def test_open(mocker):
 
     try:
         with tools._open(__file__) as fobj:
-            assert True
+            pass
     except TypeError:  # issue 101
         assert False, 'tools._open raised TypeError'
 
@@ -428,14 +426,8 @@ def test_cc_error_to_codeclimate():
         {'filename': error_result}
     )
 
-    actual_sorted = []
-    for i in actual_results:
-        actual_sorted.append(json.loads(i))
-
-    expected_sorted = []
-    for i in expected_results:
-        expected_sorted.append(json.loads(i))
-
+    actual_sorted = [json.loads(i) for i in actual_results]
+    expected_sorted = [json.loads(i) for i in expected_results]
     assert actual_sorted == expected_sorted
 
 
@@ -476,14 +468,8 @@ def test_cc_to_codeclimate():
         ),
     ]
 
-    actual_sorted = []
-    for i in actual_results:
-        actual_sorted.append(json.loads(i))
-
-    expected_sorted = []
-    for i in expected_results:
-        expected_sorted.append(json.loads(i))
-
+    actual_sorted = [json.loads(i) for i in actual_results]
+    expected_sorted = [json.loads(i) for i in expected_results]
     assert actual_sorted == expected_sorted
 
 
@@ -563,8 +549,8 @@ CC_TO_TERMINAL_CASES = [
 
 def test_cc_to_terminal():
     # do the patching
-    tools.LETTERS_COLORS = dict((l, '<!{0}!>'.format(l)) for l in 'FMC')
-    tools.RANKS_COLORS = dict((r, '<|{0}|>'.format(r)) for r in 'ABCDEF')
+    tools.LETTERS_COLORS = {l: '<!{0}!>'.format(l) for l in 'FMC'}
+    tools.RANKS_COLORS = {r: '<|{0}|>'.format(r) for r in 'ABCDEF'}
     tools.BRIGHT = '@'
     tools.RESET = '__R__'
 

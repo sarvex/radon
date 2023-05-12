@@ -188,9 +188,7 @@ def test_encoding(mocker, log_mock):
     for h_class, cfg in mappings.items():
         for f in fnames:
             harvester = h_class([f], cfg)
-            assert not any(
-                ['error' in kw for msg, args, kw in harvester.to_terminal()]
-            )
+            assert all('error' not in kw for msg, args, kw in harvester.to_terminal())
 
 
 @pytest.fixture
