@@ -10,5 +10,5 @@ mock = "*"
 pytest-mock = "*"
 
 [packages]
-mando = ">=0.3,<0.4"
+mando = ">=0.3,<0.8"
 colorama = ">=0.3,<0.4"
